@@ -145,11 +145,12 @@ class VAD:
         energy = np.sqrt(np.mean(audio_chunk ** 2))
         
         if energy > self.threshold:
-            self.speaking = True
+            self.is_speaking = True
             self.silence_frames = 0
             return True
         else:
             self.silence_frames += 1
+            self.is_speaking = False
             return False
             
     def reset(self):
@@ -249,9 +250,11 @@ class VoiceTranslator:
         result = self.transcriber.transcribe(audio_data)
         
         if result:
-            print(f"\n{'='*60}")
-            print(f"原始: {result}")
-            print(f"{'='*60}\n")
+            duration = len(audio_data) / SAMPLE_RATE
+            timestamp = time.strftime("%H:%M:%S")
+            print(f"\n[{timestamp}] ⏱ {duration:.1f}s")
+            print(f"{'─'*60}")
+            print(f"  识别: {result}")
             
     def start(self):
         """Start translation"""
