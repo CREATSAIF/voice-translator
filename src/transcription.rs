@@ -6,9 +6,9 @@ use std::process::Command;
 /// Transcriber configuration
 #[derive(Debug, Clone)]
 pub struct TranscriptionConfig {
-    pub model_size: String,  // e.g., "tiny", "base", "small", "medium"
+    pub model_size: String, // e.g., "tiny", "base", "small", "medium"
     pub language: Option<String>,
-    pub device: String,      // "cuda" or "cpu"
+    pub device: String, // "cuda" or "cpu"
 }
 
 impl Default for TranscriptionConfig {
@@ -47,7 +47,11 @@ impl Transcriber {
         // For now, return a mock result
         Ok(TranscriptionResult {
             text: "测试文本".to_string(),
-            language: self.config.language.clone().unwrap_or_else(|| "zh".to_string()),
+            language: self
+                .config
+                .language
+                .clone()
+                .unwrap_or_else(|| "zh".to_string()),
             confidence: 0.95,
             start_time_ms: 0,
             end_time_ms: 1000,
