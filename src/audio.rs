@@ -89,27 +89,24 @@ impl AudioCapture {
         let err_fn = |err| eprintln!("Audio stream error: {}", err);
 
         let stream = match config.sample_format() {
-            cpal::SampleFormat::F32 => {
-                let on_audio = Arc::new(on_audio);
-                device.build_input_stream(
-                    &config.into(),
-                    move |data: &[f32], _| {
-                        if running.load(Ordering::SeqCst) {
-                            let chunk = AudioChunk::new(
-                                data.to_vec(),
-                                sample_rate,
-                                std::time::SystemTime::now()
-                                    .duration_since(std::time::UNIX_EPOCH)
-                                    .unwrap_or_default()
-                                    .as_micros() as u64,
-                            );
-                            on_audio(chunk);
-                        }
-                    },
-                    err_fn,
-                    None,
-                )
-            }
+            cpal::SampleFormat::F32 => device.build_input_stream(
+                &config.into(),
+                move |data: &[f32], _| {
+                    if running.load(Ordering::SeqCst) {
+                        let chunk = AudioChunk::new(
+                            data.to_vec(),
+                            sample_rate,
+                            std::time::SystemTime::now()
+                                .duration_since(std::time::UNIX_EPOCH)
+                                .unwrap_or_default()
+                                .as_micros() as u64,
+                        );
+                        on_audio(chunk);
+                    }
+                },
+                err_fn,
+                None,
+            ),
             _ => return Err("Unsupported sample format".to_string()),
         }
         .map_err(|e| format!("Failed to build input stream: {}", e))?;
