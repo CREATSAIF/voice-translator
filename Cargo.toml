@@ -28,6 +28,9 @@ tracing-subscriber = "0.3"
 # Time
 chrono = "0.4"
 
+# Async traits (the translation module exposes a Translator trait object)
+async-trait = "0.1"
+
 [profile.release]
 lto = true
 codegen-units = 1

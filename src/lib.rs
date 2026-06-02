@@ -7,11 +7,16 @@
 //! 4. Translation via API or local model
 //! 5. Display results in real-time
 //!
-//! Note: `translation` and `ui` modules are planned but not yet implemented.
-//! See README.md for the development roadmap.
+//! The end-to-end orchestrator lives in [`pipeline`]. The `ui` module is
+//! planned but not yet implemented. See README.md for the development
+//! roadmap.
 
 pub mod audio;
+pub mod pipeline;
 pub mod transcription;
+pub mod translation;
 
 pub use audio::AudioCapture;
+pub use pipeline::{Pipeline, PipelineConfig, PipelineEvent, PipelineStage};
 pub use transcription::Transcriber;
+pub use translation::{CloudTranslator, LanguageCode, StubTranslator, Translator};
