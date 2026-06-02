@@ -12,6 +12,8 @@
 
 pub mod audio;
 pub mod transcription;
+pub mod vad;
 
 pub use audio::AudioCapture;
 pub use transcription::Transcriber;
+pub use vad::{rms_energy, Vad, VadConfig, VadEvent};
