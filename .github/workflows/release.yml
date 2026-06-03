@@ -23,8 +23,10 @@ jobs:
             artifact: voice-translator-gui-linux-x86_64
           - target: x86_64-pc-windows-msvc
             artifact: voice-translator-gui-windows-x86_64.exe
-          - target: x86_64-apple-darwin
-            artifact: voice-translator-gui-macos-x86_64
+          # macOS cross-compile from a Linux runner is non-trivial — cpal
+          # links against CoreAudio/Cocoa, which aren't available on the
+          # ubuntu-latest runner. To add macOS back, change that job to
+          # runs-on: macos-latest.
     steps:
       - uses: actions/checkout@v4
 
