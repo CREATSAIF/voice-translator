@@ -7,18 +7,22 @@
 //! 4. Translation via API or local model
 //! 5. Display results in real-time
 //!
-//! The end-to-end orchestrator lives in [`pipeline`]. The `ui` module is
-//! planned but not yet implemented. See README.md for the development
-//! roadmap.
+//! The end-to-end orchestrator lives in [`pipeline`]; the eframe
+//! frontend lives in [`ui`]. See README.md for the development roadmap.
 
 pub mod audio;
 pub mod pipeline;
 pub mod transcription;
 pub mod translation;
+pub mod ui;
 pub mod vad;
 
 pub use audio::AudioCapture;
 pub use pipeline::{Pipeline, PipelineConfig, PipelineEvent, PipelineStage};
 pub use transcription::Transcriber;
 pub use translation::{CloudTranslator, LanguageCode, StubTranslator, Translator};
+pub use ui::{
+    Backend, MockBackend, RealtimeBackend, RunState, UiLanguageSelection, UiLog, UiLogEntry,
+    VoiceTranslatorApp,
+};
 pub use vad::{rms_energy, Vad, VadConfig, VadEvent};
