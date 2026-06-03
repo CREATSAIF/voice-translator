@@ -41,14 +41,15 @@
 //! });
 //! // In a real app, feed audio from cpal here.
 //! let audio: Vec<f32> = vec![0.0; 16000];
-//! let event = pipeline.process_chunk(&audio, &translator).await;
-//! match event {
-//!     PipelineEvent::Translated { source, target, text, translated, .. } => {
-//!         println!("{} -> {}: {} = {}", source, target, text, translated);
+//! let result = pipeline.process_chunk(&audio, &translator).await;
+//! match result {
+//!     Ok(PipelineEvent::Translated { text, translated, stt_ms, mt_ms, .. }) => {
+//!         println!("stt={}ms mt={}ms: {} = {}", stt_ms, mt_ms, text, translated);
 //!     }
-//!     PipelineEvent::NoSpeech { .. } => { /* VAD silence */ }
-//!     PipelineEvent::Error { .. } => { /* STT/MT failure */ }
-//!     _ => {}
+//!     Ok(PipelineEvent::NoSpeech { .. }) => { /* VAD silence */ }
+//!     Ok(PipelineEvent::Error { .. }) => { /* STT/MT failure */ }
+//!     Ok(_) => { /* TranscriptOnly */ }
+//!     Err(e) => { /* pipeline-side error (e.g. chunk too large) */ }
 //! }
 //! # Ok(()) }
 //! ```
