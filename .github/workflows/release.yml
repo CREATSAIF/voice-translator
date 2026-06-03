@@ -13,20 +13,26 @@ on:
 jobs:
   build-binaries:
     name: Build voice-translator-gui (${{ matrix.target }})
-    runs-on: ubuntu-latest
+    # Per-target runner: Linux target cross-compiles fine on ubuntu, but
+    # x86_64-pc-windows-msvc requires the MSVC toolchain which is only
+    # available on windows-latest. macOS would also need macos-latest
+    # for cpal's CoreAudio/Cocoa bindings.
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         include:
           - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
             artifact: voice-translator-gui-linux-x86_64
           - target: x86_64-pc-windows-msvc
+            os: windows-latest
             artifact: voice-translator-gui-windows-x86_64.exe
           # macOS cross-compile from a Linux runner is non-trivial — cpal
           # links against CoreAudio/Cocoa, which aren't available on the
-          # ubuntu-latest runner. To add macOS back, change that job to
-          # runs-on: macos-latest.
+          # ubuntu-latest runner. To add macOS back, add:
+          #   - target: aarch64-apple-darwin, os: macos-latest, ...
     steps:
       - uses: actions/checkout@v4
 
@@ -44,13 +50,17 @@ jobs:
       - name: Cache cargo registry
         uses: actions/cache@v4
         with:
-          path: ~/.cargo/registry
+          path: |
+            ~/.cargo/registry
+            ~/AppData/Local/Temp/cargo/registry
           key: ${{ runner.os }}-${{ matrix.target }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Cache cargo build
         uses: actions/cache@v4
         with:
-          path: target
+          path: |
+            target
+            ~/AppData/Local/Temp/cargo/target
           key: ${{ runner.os }}-${{ matrix.target }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Build release binary
