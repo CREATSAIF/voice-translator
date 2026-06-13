@@ -222,9 +222,6 @@ impl Pipeline {
         if text.chars().count() < self.config.min_transcript_chars {
             return Ok(PipelineEvent::NoSpeech { at: started });
         }
-        if text.chars().count() < self.config.min_transcript_chars.saturating_add(0) {
-            // explicit no-op branch — kept for clarity / future use
-        }
         if text.is_empty()
             || text
                 .chars()
